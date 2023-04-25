@@ -2,6 +2,7 @@ package player
 
 import (
 	"go-gusanos/weapons"
+	"image/color"
 
 	"github.com/hajimehoshi/ebiten"
 )
@@ -37,12 +38,11 @@ type Worm struct {
 	DestroyRope                             func()
 	ApplyRopeForce                          func()
 	Keys                                    Keys
-	Color                                   ebiten.ColorM
+	Color                                   color.Color
 	LocalSlot                               int64 // ???
 	// ZCom_Node
 	// ZCom_ConnID
 	// RegisterClass
-	Render     func(where ebiten.Image, frame int64, x, y int64)
 	RenderFlip func(where ebiten.Image, frame int64, x, y int64)
 }
 
@@ -65,6 +65,20 @@ func (w Worm) CheckEvents() {
 	// void worm::checkevents()
 }
 
+func (w Worm) Render(where ebiten.Image, frame int64, x, y int64) {
+	var R, G, B int64
+	var h1, s1, v1, h, s, v int64
+	var g, c color.Color
+
+	width, height := w.Skin.Size()
+
+	for i := 0; i < width; i++ {
+		for j := 0; j < height; j++ {
+			// void worm::render(BITMAP *where, int frame, int _x, int _y) player.cpp
+		}
+	}
+}
+
 func New(weaponsList weapons.WeaponsList) Worm {
 	worm := Worm{}
 
@@ -82,8 +96,7 @@ func New(weaponsList weapons.WeaponsList) Worm {
 	worm.CurrentWeapon = 0
 	worm.AimSpeed = 0
 	worm.AimRecoilSpeed = 0
-	worm.Color = ebiten.ColorM{}
-	worm.Color.Translate(100, 100, 220, 1) // CHECK
+	worm.Color = color.RGBA{100, 100, 220, 1}
 
 	// a bit unclear for now CHECK
 	for _, weapon := range worm.Weapon {
