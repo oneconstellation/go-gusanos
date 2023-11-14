@@ -1,7 +1,7 @@
 package player
 
 import (
-	"go-gusanos/weapons"
+	"go-gusanos/weapon"
 	"image/color"
 
 	"github.com/hajimehoshi/ebiten"
@@ -29,9 +29,9 @@ type Worm struct {
 	CurrentFirecone                         ebiten.Image
 	FireconeTime                            int64
 	View                                    ebiten.Image
-	Weapon                                  [5]PlayerWeapon
+	Weapon                                  [5]Weapon
 	CurrentWeapon                           int64
-	Active, IsLocal, DeleteMe               bool
+	Active, IsLocal                         bool
 	Flag, Flag2, Flag3, FlagLeft, FlagRight bool
 	RopeFlag, SelectingWeapons, Firing      bool
 	ShootRope                               func()
@@ -39,11 +39,7 @@ type Worm struct {
 	ApplyRopeForce                          func()
 	Keys                                    Keys
 	Color                                   color.Color
-	LocalSlot                               int64 // ???
-	// ZCom_Node
-	// ZCom_ConnID
-	// RegisterClass
-	RenderFlip func(where ebiten.Image, frame int64, x, y int64)
+	RenderFlip                              func(where ebiten.Image, frame int64, x, y int64)
 }
 
 func (w Worm) SendMessage(message string) {
@@ -81,13 +77,12 @@ func (w Worm) Render(where ebiten.Image, frame int64, x, y int64) {
 	}
 }
 
-func New(weaponsList weapons.WeaponsList) Worm {
+func New(weaponsList weapon.WeaponsList) Worm {
 	worm := Worm{}
 
 	worm.Name = "Player"
 	worm.X = 80 * 1000
 	worm.Y = 40 * 1000
-	worm.LocalSlot = 0
 	worm.XSpeed = 0
 	worm.YSpeed = 0
 	worm.Aim = 64000
@@ -100,20 +95,18 @@ func New(weaponsList weapons.WeaponsList) Worm {
 	worm.AimRecoilSpeed = 0
 	worm.Color = color.RGBA{100, 100, 220, 1}
 
-	// a bit unclear for now CHECK
-	for _, weapon := range worm.Weapon {
-		weapon.WeaponIndex = 0
-		weapon.ShootTime = 0
-		weapon.Ammo = weaponsList.Number[weapon.WeaponIndex].Ammo
-		weapon.Reloading = false
-	}
+	// for _, weapon := range worm.Weapon {
+	// 	weapon.WeaponIndex = 0
+	// 	weapon.ShootTime = 0
+	// 	weapon.Ammo = weaponsList.Number[weapon.WeaponIndex].Ammo
+	// 	weapon.Reloading = false
+	// }
 
 	worm.CurrentFrame = 2700
 	worm.Crosshair = ebiten.Image{} // load image here CHECK
 	worm.Active = false
 	worm.Flag = false
 	worm.IsLocal = false
-	worm.DeleteMe = false
 	worm.SelectingWeapons = false
 	worm.RopeState = 0
 	worm.RopeX = 1

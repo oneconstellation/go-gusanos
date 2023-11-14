@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"go-gusanos/game"
+	"go-gusanos/player"
+	"go-gusanos/weapon"
 
 	"github.com/hajimehoshi/ebiten"
 )
@@ -12,7 +14,9 @@ func main() {
 	ebiten.SetWindowSize(640, 480)
 	ebiten.SetWindowTitle("go-gusanos")
 
-	game := &game.Game{}
+	game := &game.Game{
+		Players: []player.Worm{player.New(weapon.WeaponsList{})},
+	}
 	if err := ebiten.RunGame(game); err != nil {
 		panic(err)
 	}

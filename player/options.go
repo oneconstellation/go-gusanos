@@ -1,6 +1,6 @@
 package player
 
-type PlayerOptions struct {
+type Options struct {
 	Sensitivity     int64
 	AimAcceleration int64
 	AimFriction     int64

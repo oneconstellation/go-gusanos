@@ -1,4 +1,4 @@
-package weapons
+package weapon
 
 type WeaponsList struct {
 	Start, End   *Weapon

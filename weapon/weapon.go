@@ -1,4 +1,4 @@
-package weapons
+package weapon
 
 import (
 	"go-gusanos/particle"
