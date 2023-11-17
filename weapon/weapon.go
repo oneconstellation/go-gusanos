@@ -3,7 +3,7 @@ package weapon
 import (
 	"go-gusanos/particle"
 
-	"github.com/hajimehoshi/ebiten"
+	"github.com/hajimehoshi/ebiten/v2"
 )
 
 type Weapon struct {

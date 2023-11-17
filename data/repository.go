@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/hajimehoshi/ebiten"
+	"github.com/hajimehoshi/ebiten/v2"
 )
 
 type GameDataRepository struct {

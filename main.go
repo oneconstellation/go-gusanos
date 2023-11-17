@@ -7,7 +7,7 @@ import (
 	"go-gusanos/player"
 	"go-gusanos/weapon"
 
-	"github.com/hajimehoshi/ebiten"
+	"github.com/hajimehoshi/ebiten/v2"
 )
 
 func main() {
