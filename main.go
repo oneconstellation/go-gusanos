@@ -6,6 +6,8 @@ import (
 	"go-gusanos/game"
 	"go-gusanos/player"
 	"go-gusanos/weapon"
+	"log"
+	"strconv"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -19,8 +21,11 @@ func main() {
 
 	gameData.LoadSprites("default")
 
+	log.Println("loaded sprites: " + strconv.Itoa(len(gameData.Sprites)))
+
 	game := &game.Game{
 		Players: []player.Worm{player.New(weapon.WeaponsList{})},
+		Data:    &gameData,
 	}
 
 	if err := ebiten.RunGame(game); err != nil {
