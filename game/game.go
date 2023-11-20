@@ -1,15 +1,14 @@
 package game
 
 import (
-	"go-gusanos/data"
+	"go-gusanos/gameData"
 	"go-gusanos/player"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 )
 
 type Game struct {
-	Data    *data.GameDataRepository
+	Data    *gameData.GameDataRepository
 	Players []player.Worm
 }
 
@@ -21,13 +20,7 @@ func (g *Game) Update() error {
 func (g *Game) Draw(screen *ebiten.Image) {
 	// render the screen
 	op := &ebiten.DrawImageOptions{}
-	ebitenutil.DebugPrint(screen, "go gusanos!")
-	for _, player := range g.Players {
-		ebitenutil.DebugPrintAt(screen, player.Name, 0, 15)
-	}
-	for _, sprite := range g.Data.Sprites {
-		screen.DrawImage(&sprite, op)
-	}
+	screen.DrawImage(g.Data.Sprites["uzumaki.png"], op)
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {

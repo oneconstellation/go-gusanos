@@ -2,26 +2,20 @@ package main
 
 import (
 	"fmt"
-	"go-gusanos/data"
 	"go-gusanos/game"
+	"go-gusanos/gameData"
 	"go-gusanos/player"
 	"go-gusanos/weapon"
-	"log"
-	"strconv"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
 func main() {
 	fmt.Println("gusanos!")
-	ebiten.SetWindowSize(640, 480)
+	ebiten.SetWindowSize(1280, 960)
 	ebiten.SetWindowTitle("go-gusanos")
 
-	gameData := data.GameDataRepository{}
-
-	gameData.LoadSprites("default")
-
-	log.Println("loaded sprites: " + strconv.Itoa(len(gameData.Sprites)))
+	gameData := gameData.New("default")
 
 	game := &game.Game{
 		Players: []player.Worm{player.New(weapon.WeaponsList{})},
