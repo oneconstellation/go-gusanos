@@ -4,7 +4,7 @@ import (
 	"go-gusanos/weapon"
 	"image/color"
 
-	"github.com/hajimehoshi/ebiten"
+	"github.com/hajimehoshi/ebiten/v2"
 )
 
 type Worm struct {
