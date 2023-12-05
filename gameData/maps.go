@@ -2,8 +2,9 @@ package gameData
 
 import (
 	"go-gusanos/util"
+	"io/fs"
 	"log"
-	"os"
+	"path/filepath"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -27,14 +28,15 @@ func LoadMaps(modName string) Maps {
 	directory := util.GetModDataPath(modName) + "/maps/"
 
 	// load files from mods/x/maps directory
-	files, err := os.ReadDir(directory)
-	if err != nil {
-		panic("error: reading mod directory failed: " + err.Error())
-	}
+	filepath.Walk(directory, func(path string, info fs.FileInfo, err error) error {
+		if err != nil {
+			panic("error: reading mod directory failed: " + err.Error())
+		}
 
-	for _, file := range files {
-		log.Println(file.Name(), file.IsDir())
-	}
+		// process map files here
+
+		return nil
+	})
 
 	return maps
 }
