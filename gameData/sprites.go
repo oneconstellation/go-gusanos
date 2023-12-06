@@ -1,10 +1,7 @@
 package gameData
 
 import (
-	"bytes"
 	"go-gusanos/util"
-	"image"
-	_ "image/png"
 	"log"
 	"os"
 
@@ -27,19 +24,7 @@ func LoadSprites(modName string) Sprites {
 
 	// convert them to []ebiten.Image
 	for _, file := range files {
-		filePath := directory + file.Name()
-
-		data, err := os.ReadFile(filePath)
-		if err != nil {
-			panic("error: reading file " + file.Name() + " failed: " + err.Error())
-		}
-		log.Println(file.Name())
-		img, _, err := image.Decode(bytes.NewBuffer(data))
-		if err != nil {
-			panic("error: decoding image " + file.Name() + " failed: " + err.Error())
-		}
-		decodedImage := ebiten.NewImageFromImage(img)
-		sprites[file.Name()] = decodedImage
+		sprites[file.Name()] = util.NewImageFromFile(directory, file.Name())
 	}
 
 	// add all sprites to repository

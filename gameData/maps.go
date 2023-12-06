@@ -15,7 +15,7 @@ type MapConfig struct {
 type Map struct {
 	Level    *ebiten.Image
 	Material *ebiten.Image
-	Config   MapConfig
+	Config   []byte
 }
 
 type Maps map[string]Map
@@ -39,20 +39,30 @@ func LoadMaps(modName string) Maps {
 				panic("error: reading map directory failed: " + err.Error())
 			}
 
-			var hasLevel, hasMaterial bool
+			var level, material *ebiten.Image
+			var config []byte
 
 			for _, file := range mapFiles {
 				switch file.Name() {
 				case "level.png":
-					hasLevel = true
+					level = util.NewImageFromFile(directory+mapDir.Name()+"/", file.Name())
 				case "material.png":
-					hasMaterial = true
+					material = util.NewImageFromFile(directory+mapDir.Name()+"/", file.Name())
+				case "config.cfg":
+					config, err = os.ReadFile(directory + mapDir.Name() + "/" + file.Name())
+					if err != nil {
+						panic("error: reading map config failed: " + err.Error())
+					}
 				}
 			}
 
-			if hasLevel && hasMaterial {
+			if level != nil && material != nil && config != nil {
 				// initialize map for complete maps
-				maps[mapDir.Name()] = Map{}
+				maps[mapDir.Name()] = Map{
+					Level:    level,
+					Material: material,
+					Config:   config,
+				}
 			}
 		}
 	}
