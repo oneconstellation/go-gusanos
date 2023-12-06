@@ -1,6 +1,8 @@
 package gameData
 
 import (
+	"bufio"
+	"fmt"
 	"go-gusanos/util"
 	"log"
 	"os"
@@ -15,7 +17,7 @@ type MapConfig struct {
 type Map struct {
 	Level    *ebiten.Image
 	Material *ebiten.Image
-	Config   []byte
+	Config   string
 }
 
 type Maps map[string]Map
@@ -40,7 +42,8 @@ func LoadMaps(modName string) Maps {
 			}
 
 			var level, material *ebiten.Image
-			var config []byte
+			var configFile *os.File
+			var configText string
 
 			for _, file := range mapFiles {
 				switch file.Name() {
@@ -49,25 +52,33 @@ func LoadMaps(modName string) Maps {
 				case "material.png":
 					material = util.NewImageFromFile(directory+mapDir.Name()+"/", file.Name())
 				case "config.cfg":
-					config, err = os.ReadFile(directory + mapDir.Name() + "/" + file.Name())
+					configFile, err = os.Open(directory + mapDir.Name() + "/" + file.Name())
 					if err != nil {
 						panic("error: reading map config failed: " + err.Error())
+					}
+					defer configFile.Close()
+
+					// TODO add omfgScript parser
+					scanner := bufio.NewScanner(configFile)
+					for scanner.Scan() {
+						configText += scanner.Text()
+						fmt.Println(scanner.Text())
 					}
 				}
 			}
 
-			if level != nil && material != nil && config != nil {
+			if level != nil && material != nil && configFile != nil {
 				// initialize map for complete maps
 				maps[mapDir.Name()] = Map{
 					Level:    level,
 					Material: material,
-					Config:   config,
+					Config:   configText,
 				}
 			}
 		}
 	}
 
-	log.Println(maps)
+	// log.Println(maps)
 
 	return maps
 }
