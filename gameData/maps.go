@@ -2,10 +2,10 @@ package gameData
 
 import (
 	"bufio"
-	"fmt"
 	"go-gusanos/util"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -52,18 +52,7 @@ func LoadMaps(modName string) Maps {
 				case "material.png":
 					material = util.NewImageFromFile(directory+mapDir.Name()+"/", file.Name())
 				case "config.cfg":
-					configFile, err = os.Open(directory + mapDir.Name() + "/" + file.Name())
-					if err != nil {
-						panic("error: reading map config failed: " + err.Error())
-					}
-					defer configFile.Close()
-
-					// TODO add omfgScript parser
-					scanner := bufio.NewScanner(configFile)
-					for scanner.Scan() {
-						configText += scanner.Text()
-						fmt.Println(scanner.Text())
-					}
+					// use parser here
 				}
 			}
 
@@ -81,4 +70,31 @@ func LoadMaps(modName string) Maps {
 	// log.Println(maps)
 
 	return maps
+}
+
+func ParseMapConfigFile(filepath string) MapConfig {
+	// not going to recreate whole OMFGScript at the moment,
+	// just simple, naive parsing the config.cfg for spawnpoints
+
+	// load map config file
+	configFile, err := os.Open(filepath)
+	if err != nil {
+		panic("error: reading map config failed: " + err.Error())
+	}
+	defer configFile.Close()
+
+	var unparsedLines []string = []string{}
+	// scan file for spawnpoints definition
+	scanner := bufio.NewScanner(configFile)
+	scanner.Split(func(data []byte, atEOF bool) (advance int, token []byte, err error) {
+
+	})
+
+	for scanner.Scan() {
+		if strings.Contains(scanner.Text(), "spawnpoints = [") {
+			continue
+		}
+	}
+
+	return MapConfig{}
 }
