@@ -14,6 +14,7 @@ func main() {
 	fmt.Println("gusanos!")
 	ebiten.SetWindowSize(1280, 960)
 	ebiten.SetWindowTitle("go-gusanos")
+	ebiten.SetVsyncEnabled(true)
 
 	gameData := gameData.New("default")
 
