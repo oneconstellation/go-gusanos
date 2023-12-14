@@ -2,7 +2,6 @@ package gameData
 
 import (
 	"bufio"
-	"fmt"
 	"go-gusanos/util"
 	"log"
 	"os"
@@ -66,15 +65,10 @@ func LoadMaps(modName string) Maps {
 		}
 	}
 
-	// log.Println(maps)
-
 	return maps
 }
 
 func ParseMapConfigFile(filepath string) MapConfig {
-	// not going to recreate whole OMFGScript at the moment,
-	// just simple, naive parsing the config.cfg for spawnpoints
-
 	// load map config file
 	configFile, err := os.Open(filepath)
 	if err != nil {
@@ -82,17 +76,13 @@ func ParseMapConfigFile(filepath string) MapConfig {
 	}
 	defer configFile.Close()
 
-	// var unparsedLines []string = []string{}
-	// scan file for spawnpoints definition
 	scanner := bufio.NewScanner(configFile)
 	scanner.Split(bufio.ScanWords)
 
-	for scanner.Scan() {
-		// if strings.Contains(scanner.Text(), "spawnpoints = [") {
-		// 	continue
-		// }
-		fmt.Println(scanner.Text())
-	}
+	// TODO
+	// for scanner.Scan() {
+	// 	fmt.Println(scanner.Text())
+	// }
 
 	return MapConfig{}
 }
