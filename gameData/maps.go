@@ -2,10 +2,10 @@ package gameData
 
 import (
 	"bufio"
+	"fmt"
 	"go-gusanos/util"
 	"log"
 	"os"
-	"strings"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -17,7 +17,7 @@ type MapConfig struct {
 type Map struct {
 	Level    *ebiten.Image
 	Material *ebiten.Image
-	Config   string
+	Config   MapConfig
 }
 
 type Maps map[string]Map
@@ -42,8 +42,7 @@ func LoadMaps(modName string) Maps {
 			}
 
 			var level, material *ebiten.Image
-			var configFile *os.File
-			var configText string
+			var config MapConfig
 
 			for _, file := range mapFiles {
 				switch file.Name() {
@@ -52,16 +51,16 @@ func LoadMaps(modName string) Maps {
 				case "material.png":
 					material = util.NewImageFromFile(directory+mapDir.Name()+"/", file.Name())
 				case "config.cfg":
-					// use parser here
+					config = ParseMapConfigFile(directory + mapDir.Name() + "/" + file.Name())
 				}
 			}
 
-			if level != nil && material != nil && configFile != nil {
+			if level != nil && material != nil {
 				// initialize map for complete maps
 				maps[mapDir.Name()] = Map{
 					Level:    level,
 					Material: material,
-					Config:   configText,
+					Config:   config,
 				}
 			}
 		}
@@ -83,17 +82,16 @@ func ParseMapConfigFile(filepath string) MapConfig {
 	}
 	defer configFile.Close()
 
-	var unparsedLines []string = []string{}
+	// var unparsedLines []string = []string{}
 	// scan file for spawnpoints definition
 	scanner := bufio.NewScanner(configFile)
-	scanner.Split(func(data []byte, atEOF bool) (advance int, token []byte, err error) {
-
-	})
+	scanner.Split(bufio.ScanWords)
 
 	for scanner.Scan() {
-		if strings.Contains(scanner.Text(), "spawnpoints = [") {
-			continue
-		}
+		// if strings.Contains(scanner.Text(), "spawnpoints = [") {
+		// 	continue
+		// }
+		fmt.Println(scanner.Text())
 	}
 
 	return MapConfig{}
