@@ -1,0 +1,3 @@
+- Recreate gusanos game with the modern toolset, and publish builds for at least Linux, Mac OS and Windows.
+- Don't try to rewrite existing code, just go with the 'create new game' mindset, and reference original whenever it's needed.
+- Maintain [[Backwards compatibility|backwards compatibility]] with all the existing mods to gusanos, and, as the original, with legacy Liero maps.
