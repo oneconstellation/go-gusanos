@@ -19,8 +19,12 @@
             "id": "b01f320e48e6e3be",
             "type": "leaf",
             "state": {
-              "type": "graph",
-              "state": {}
+              "type": "markdown",
+              "state": {
+                "file": "Goal.md",
+                "mode": "source",
+                "source": false
+              }
             }
           }
         ],
@@ -90,6 +94,7 @@
             "state": {
               "type": "backlink",
               "state": {
+                "file": "Goal.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -106,6 +111,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
+                "file": "Goal.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -127,7 +133,9 @@
             "type": "leaf",
             "state": {
               "type": "outline",
-              "state": {}
+              "state": {
+                "file": "Goal.md"
+              }
             }
           }
         ]
@@ -148,9 +156,10 @@
   },
   "active": "b01f320e48e6e3be",
   "lastOpenFiles": [
+    "2023-12-18.md",
+    "Goal.md",
     "Maps.md",
     "Backwards compatibility.md",
-    "Goal.md",
     "OMFGScript.md"
   ]
 }
