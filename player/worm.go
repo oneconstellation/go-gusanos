@@ -4,14 +4,15 @@ import (
 	"go-gusanos/gameData"
 	"image"
 	"image/color"
+	"strconv"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 )
 
 const (
 	frameOffsetX int = 1
 	frameOffsetY int = 1
-	frameGutter  int = 1
 	frameWidth   int = 9
 	frameHeight  int = 9
 	frameCount   int = 4
@@ -72,12 +73,25 @@ func (w Worm) CheckEvents() {
 }
 
 func (w Worm) Render(screen *ebiten.Image, frame int) {
+	var frameGutter int = 1
+
+	if frame == 0 {
+		frameGutter = 0
+	}
+
 	// frame is the frame number of skin/mask sprite which should be rendered
 	op := &ebiten.DrawImageOptions{}
 	// op.GeoM.Translate(-float64(frameWidth)/2, -float64(frameHeight)/2)
-	sx, sy := frameOffsetX+frame*frameWidth+frameGutter, frameOffsetY
+	sx := frameOffsetX + frame*(frameWidth+frameGutter)
+	sy := frameOffsetY
 
-	screen.DrawImage(w.Skin.SubImage(image.Rect(sx, sy, sx+frameWidth, sy+frameHeight)).(*ebiten.Image), op)
+	ebitenutil.DebugPrintAt(screen, strconv.Itoa(sx), 10, 10)
+	ebitenutil.DebugPrintAt(screen, strconv.Itoa(sy), 10, 30)
+	ebitenutil.DebugPrintAt(screen, strconv.Itoa(frame), 10, 50)
+
+	screen.DrawImage(
+		w.Skin.SubImage(
+			image.Rect(sx, sy, sx+frameWidth, sy+frameHeight)).(*ebiten.Image), op)
 }
 
 func New(assets gameData.Sprites) Worm {
