@@ -21,8 +21,8 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Backwards compatibility.md",
-                "mode": "preview",
+                "file": "Goal.md",
+                "mode": "source",
                 "source": false
               }
             }
@@ -94,7 +94,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Backwards compatibility.md",
+                "file": "Goal.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -111,7 +111,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Backwards compatibility.md",
+                "file": "Goal.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -134,7 +134,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Backwards compatibility.md"
+                "file": "Goal.md"
               }
             }
           }
@@ -156,7 +156,10 @@
   },
   "active": "b01f320e48e6e3be",
   "lastOpenFiles": [
+    "2023-12-18.md",
     "Goal.md",
-    "Backwards compatibility.md"
+    "Maps.md",
+    "Backwards compatibility.md",
+    "OMFGScript.md"
   ]
 }

@@ -1,7 +1,6 @@
 package player
 
 import (
-	"go-gusanos/weapon"
 	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -77,7 +76,7 @@ func (w Worm) Render(where ebiten.Image, frame int64, x, y int64) {
 	}
 }
 
-func New(weaponsList weapon.WeaponsList) Worm {
+func New() Worm {
 	worm := Worm{}
 
 	worm.Name = "Player"
