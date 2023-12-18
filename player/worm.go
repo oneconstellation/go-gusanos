@@ -63,10 +63,6 @@ func (w Worm) CheckEvents() {
 func (w Worm) Render(where ebiten.Image, frame int64, x, y int64) {
 	// frame is the frame number of skin/mask sprite which should be rendered CHECK
 
-	// var R, G, B int64
-	// var h1, s1, v1, h, s, v int64
-	// var g, c color.Color
-
 	width, height := w.Skin.Size()
 
 	for i := 0; i < width; i++ {

@@ -20,9 +20,11 @@ func (g *Game) Update() error {
 
 func (g *Game) Draw(screen *ebiten.Image) {
 	// render the screen
+	// render the selected (where?) map
 	op := &ebiten.DrawImageOptions{}
 	screen.DrawImage(g.Data.Maps["poo"].Level, op)
 
+	// render players
 	for _, player := range g.Players {
 		screen.DrawImage(g.Data.Sprites["skin.png"], op)
 		fmt.Println("added player ", player)
