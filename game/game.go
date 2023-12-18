@@ -1,7 +1,6 @@
 package game
 
 import (
-	"fmt"
 	"go-gusanos/gameData"
 	"go-gusanos/player"
 
@@ -11,10 +10,12 @@ import (
 type Game struct {
 	Data    *gameData.GameDataRepository
 	Players []player.Worm
+	count   int
 }
 
 func (g *Game) Update() error {
 	// update state
+	g.count++
 	return nil
 }
 
@@ -24,10 +25,11 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	op := &ebiten.DrawImageOptions{}
 	screen.DrawImage(g.Data.Maps["poo"].Level, op)
 
-	// render players
+	frame := (g.count / 10) % 4
+
+	// render player
 	for _, player := range g.Players {
-		screen.DrawImage(g.Data.Sprites["skin.png"], op)
-		fmt.Println("added player ", player)
+		player.Render(screen, frame)
 	}
 }
 

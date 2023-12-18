@@ -21,7 +21,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Sprites.md",
+                "file": "Maps.md",
                 "mode": "source",
                 "source": false
               }
@@ -94,7 +94,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Sprites.md",
+                "file": "Maps.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -111,7 +111,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Sprites.md",
+                "file": "Maps.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -134,7 +134,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Sprites.md"
+                "file": "Maps.md"
               }
             }
           }
@@ -142,7 +142,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 300,
+    "collapsed": true
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -156,9 +157,9 @@
   },
   "active": "b01f320e48e6e3be",
   "lastOpenFiles": [
-    "Backwards compatibility.md",
-    "Sprites.md",
     "OMFGScript.md",
+    "Sprites.md",
+    "Backwards compatibility.md",
     "Goal.md",
     "Maps.md",
     "2023-12-18.md"

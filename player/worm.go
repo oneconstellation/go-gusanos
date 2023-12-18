@@ -1,9 +1,20 @@
 package player
 
 import (
+	"go-gusanos/gameData"
+	"image"
 	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
+)
+
+const (
+	frameOffsetX int = 1
+	frameOffsetY int = 1
+	frameGutter  int = 1
+	frameWidth   int = 9
+	frameHeight  int = 9
+	frameCount   int = 4
 )
 
 type Worm struct {
@@ -23,11 +34,11 @@ type Worm struct {
 	Aim, AimSpeed, AimRecoilSpeed           int64
 	CurrentFrame                            uint64
 	Direction                               int // enum or bool here?
-	Skin, Mask                              ebiten.Image
-	Crosshair                               ebiten.Image
-	CurrentFirecone                         ebiten.Image
+	Skin, Mask                              *ebiten.Image
+	Crosshair                               *ebiten.Image
+	CurrentFirecone                         *ebiten.Image
 	FireconeTime                            int64
-	View                                    ebiten.Image
+	View                                    *ebiten.Image
 	Weapon                                  [5]Weapon
 	CurrentWeapon                           int64
 	Active, IsLocal                         bool
@@ -38,7 +49,7 @@ type Worm struct {
 	ApplyRopeForce                          func()
 	Keys                                    Keys
 	Color                                   color.Color
-	RenderFlip                              func(where ebiten.Image, frame int64, x, y int64)
+	RenderFlip                              func(where *ebiten.Image, frame int64, x, y int64)
 }
 
 func (w Worm) SendMessage(message string) {
@@ -60,19 +71,16 @@ func (w Worm) CheckEvents() {
 	// void worm::checkevents()
 }
 
-func (w Worm) Render(where ebiten.Image, frame int64, x, y int64) {
-	// frame is the frame number of skin/mask sprite which should be rendered CHECK
+func (w Worm) Render(screen *ebiten.Image, frame int) {
+	// frame is the frame number of skin/mask sprite which should be rendered
+	op := &ebiten.DrawImageOptions{}
+	// op.GeoM.Translate(-float64(frameWidth)/2, -float64(frameHeight)/2)
+	sx, sy := frameOffsetX+frame*frameWidth+frameGutter, frameOffsetY
 
-	width, height := w.Skin.Size()
-
-	for i := 0; i < width; i++ {
-		for j := 0; j < height; j++ {
-			// void worm::render(BITMAP *where, int frame, int _x, int _y) player.cpp
-		}
-	}
+	screen.DrawImage(w.Skin.SubImage(image.Rect(sx, sy, sx+frameWidth, sy+frameHeight)).(*ebiten.Image), op)
 }
 
-func New() Worm {
+func New(assets gameData.Sprites) Worm {
 	worm := Worm{}
 
 	worm.Name = "Player"
@@ -98,7 +106,7 @@ func New() Worm {
 	// }
 
 	worm.CurrentFrame = 2700
-	worm.Crosshair = ebiten.Image{} // load image here CHECK
+	worm.Crosshair = assets["crosshair.png"] // load image here CHECK
 	worm.Active = false
 	worm.Flag = false
 	worm.IsLocal = false
@@ -108,13 +116,13 @@ func New() Worm {
 	worm.RopeXSpeed = 1
 	worm.RopeY = 1
 	worm.RopeYSpeed = 1
-	worm.CurrentFirecone = ebiten.Image{}
+	worm.CurrentFirecone = assets["firecone.png"]
 	worm.FireconeTime = 0
 	// worm.AimAcceleration = 100
 	// worm.AimFriction = 50
 	// worm.AimMaxSpeed = 1200
-	worm.Skin = ebiten.Image{}
-	worm.Mask = ebiten.Image{}
+	worm.Skin = assets["skin.png"]
+	worm.Mask = assets["skin-mask.png"]
 	worm.Keys = Keys{
 		Up:     false,
 		Down:   false,
