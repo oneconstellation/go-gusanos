@@ -21,7 +21,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Maps.md",
+                "file": "Sprites.md",
                 "mode": "source",
                 "source": false
               }
@@ -94,7 +94,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Maps.md",
+                "file": "Sprites.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -111,7 +111,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Maps.md",
+                "file": "Sprites.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -134,7 +134,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Maps.md"
+                "file": "Sprites.md"
               }
             }
           }
@@ -157,11 +157,11 @@
   },
   "active": "b01f320e48e6e3be",
   "lastOpenFiles": [
-    "OMFGScript.md",
-    "Sprites.md",
     "Backwards compatibility.md",
     "Goal.md",
+    "OMFGScript.md",
     "Maps.md",
+    "Sprites.md",
     "2023-12-18.md"
   ]
 }

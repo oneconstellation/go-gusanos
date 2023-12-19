@@ -2,6 +2,7 @@ package player
 
 import (
 	"go-gusanos/gameData"
+	"go-gusanos/util"
 	"image"
 	"image/color"
 	"strconv"
@@ -11,11 +12,9 @@ import (
 )
 
 const (
-	frameOffsetX int = 1
-	frameOffsetY int = 1
-	frameWidth   int = 9
-	frameHeight  int = 9
-	frameCount   int = 4
+	frameWidth  int = 10
+	frameHeight int = 10
+	frameCount  int = 4
 )
 
 type Worm struct {
@@ -73,25 +72,32 @@ func (w Worm) CheckEvents() {
 }
 
 func (w Worm) Render(screen *ebiten.Image, frame int) {
-	var frameGutter int = 1
+	var frameGutter int = 0
 
-	if frame == 0 {
-		frameGutter = 0
+	if frame > 0 {
+		frameGutter = 1
 	}
 
+	// w.Skin.Bounds().Size()
+
 	// frame is the frame number of skin/mask sprite which should be rendered
-	op := &ebiten.DrawImageOptions{}
-	// op.GeoM.Translate(-float64(frameWidth)/2, -float64(frameHeight)/2)
-	sx := frameOffsetX + frame*(frameWidth+frameGutter)
-	sy := frameOffsetY
+	sx := frame * frameWidth
+	sy := 0
 
 	ebitenutil.DebugPrintAt(screen, strconv.Itoa(sx), 10, 10)
 	ebitenutil.DebugPrintAt(screen, strconv.Itoa(sy), 10, 30)
 	ebitenutil.DebugPrintAt(screen, strconv.Itoa(frame), 10, 50)
+	// ebitenutil.DebugPrintAt(screen, strconv.Itoa(frameGutter), 10, 70)
 
-	screen.DrawImage(
-		w.Skin.SubImage(
-			image.Rect(sx, sy, sx+frameWidth, sy+frameHeight)).(*ebiten.Image), op)
+	skin := util.CutOffset(w.Skin, 1, 1)
+	screen.DrawImage(skin.SubImage(image.Rect(sx, sy, sx+frameWidth-frameGutter, sy+frameHeight)).(*ebiten.Image), &ebiten.DrawImageOptions{})
+
+	crosshair := util.CutOffset(w.Crosshair, 1, 1)
+	crosshairBounds := crosshair.Bounds().Size()
+	op := &ebiten.DrawImageOptions{}
+	op.GeoM.Translate(float64(frameWidth)+10, float64(frameHeight/2-crosshairBounds.Y/2))
+
+	screen.DrawImage(crosshair, op)
 }
 
 func New(assets gameData.Sprites) Worm {

@@ -26,3 +26,8 @@ func NewImageFromFile(path, fileName string) *ebiten.Image {
 
 	return decodedImage
 }
+
+func CutOffset(img *ebiten.Image, x, y int) *ebiten.Image {
+	bounds := img.Bounds().Size()
+	return img.SubImage(image.Rect(x, y, bounds.X, bounds.Y)).(*ebiten.Image)
+}
