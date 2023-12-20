@@ -1,0 +1,2 @@
+Sprite maps from default gusanos mod are built in specific way, which needs a custom loader to fetch all the data from them.
+Subsprites have uneven widths: on the top and left white border, the center point of each sprite is marked with red (255,0,0) pixel, the split point with black (0,0,0) one. Transparency is marked with magenta (255,0,255).
