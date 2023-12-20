@@ -89,7 +89,7 @@ func (w Worm) Render(screen *ebiten.Image, frame int) {
 	ebitenutil.DebugPrintAt(screen, strconv.Itoa(frame), 10, 50)
 	// ebitenutil.DebugPrintAt(screen, strconv.Itoa(frameGutter), 10, 70)
 
-	skin := util.CutOffset(w.Skin, 1, 1)
+	skin, _ := util.PrepareSpriteMap(w.Skin)
 	screen.DrawImage(skin.SubImage(image.Rect(sx, sy, sx+frameWidth-frameGutter, sy+frameHeight)).(*ebiten.Image), &ebiten.DrawImageOptions{})
 
 	crosshair := util.CutOffset(w.Crosshair, 1, 1)
