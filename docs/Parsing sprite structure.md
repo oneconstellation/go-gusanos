@@ -10,3 +10,6 @@ Sprites have uneven widths: on the top and left white border, the center point o
 - cropped image,
 - anchor points,
 - split points,
+
+### Issues
+Getting sub sprite, by (row, col) - using split points.

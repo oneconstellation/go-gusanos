@@ -2,7 +2,6 @@ package util
 
 import (
 	"bytes"
-	"fmt"
 	"image"
 	_ "image/png"
 	"os"
@@ -10,7 +9,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-func NewImageFromFile(path, fileName string) *ebiten.Image {
+func NewImageFromFile(path, fileName string) image.Image {
 	filePath := path + fileName
 
 	data, err := os.ReadFile(filePath)
@@ -23,37 +22,10 @@ func NewImageFromFile(path, fileName string) *ebiten.Image {
 		panic("error: decoding image " + fileName + " failed: " + err.Error())
 	}
 
-	decodedImage := ebiten.NewImageFromImage(img)
-
-	return decodedImage
+	return img
 }
 
 func CutOffset(img *ebiten.Image, x, y int) *ebiten.Image {
 	size := img.Bounds().Size()
 	return img.SubImage(image.Rect(x, y, size.X, size.Y)).(*ebiten.Image)
-}
-
-type SpriteMapMeta struct {
-	AnchorPoints []int
-	SplitPoints  []int
-}
-
-func PrepareSpriteMap(img *ebiten.Image) (*ebiten.Image, SpriteMapMeta) {
-	size := img.Bounds().Size()
-
-	for i := 0; i < size.X; i++ {
-		pixel := img.At(0, i)
-
-		fmt.Println(pixel.RGBA())
-		if r, g, b, a := pixel.RGBA(); r == 255 && g == 0 && b == 0 && a == 255 {
-			fmt.Println("is red!")
-		}
-	}
-
-	newImg := CutOffset(img, 1, 1)
-
-	return newImg, SpriteMapMeta{
-		AnchorPoints: []int{},
-		SplitPoints:  []int{},
-	}
 }
