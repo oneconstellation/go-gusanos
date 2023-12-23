@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"go-gusanos/util"
 	"image"
+	"image/color"
 	"image/color/palette"
 	_ "image/png"
 	"log"
@@ -110,6 +111,10 @@ func LoadSprites(modName string) Sprites {
 	return sprites
 }
 
+type SubImager interface {
+	SubImage(r image.Rectangle) image.Image
+}
+
 func (s Sprite) GetSubSprite(row, col int) *ebiten.Image {
 	// if we want row 0, col 0 - (0, 0, splitx 0, splity 0)
 	// if we want row 1, col 0 - (splitx 0, 0, splitx 1, splity 1)
@@ -137,7 +142,25 @@ func (s Sprite) GetSubSprite(row, col int) *ebiten.Image {
 		y1 = s.SplitPointsY[col] + 1
 	}
 
-	paletted := image.NewPaletted(s.RawImage.Bounds(), palette.Plan9) // TODO, black rect instead
+	bounds := s.RawImage.Bounds()
+	sub := s.RawImage.(SubImager).SubImage(image.Rect(1, 1, bounds.Size().X, bounds.Size().Y))
+
+	subBounds := sub.Bounds()
+	var palette color.Palette = palette.WebSafe
+	paletted := image.NewPaletted(subBounds, palette)
+	for y := subBounds.Min.Y; y < subBounds.Max.Y; y++ {
+		for x := subBounds.Min.X; x < subBounds.Max.X; x++ {
+			pixel := s.RawImage.At(x, y)
+			r, g, b, _ := pixel.RGBA()
+
+			if r == 65535 && g == 0 && b == 65535 {
+				paletted.Set(x, y, color.Transparent)
+				continue
+			}
+
+			paletted.Set(x, y, paletted.Palette.Convert(s.RawImage.At(x, y)))
+		}
+	}
 	cut := paletted.SubImage(image.Rect(x0, y0, x1, y1))
 
 	return ebiten.NewImageFromImage(cut)
