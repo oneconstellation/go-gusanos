@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"go-gusanos/util"
 	"image"
+	"image/color/palette"
+	_ "image/png"
 	"log"
 	"os"
 	"strconv"
@@ -13,6 +15,7 @@ import (
 
 type Sprite struct {
 	Image         *ebiten.Image
+	RawImage      image.Image
 	AnchorPointsX map[int]int
 	AnchorPointsY map[int]int
 	SplitPointsX  map[int]int
@@ -90,10 +93,12 @@ func LoadSprites(modName string) Sprites {
 		fmt.Println(splitPointsY)
 		fmt.Println(anchorPointsX)
 		fmt.Println(anchorPointsY)
-		newImg := util.CutOffset(ebiten.NewImageFromImage(img), 1, 1)
+
+		newImg := ebiten.NewImageFromImage(img).SubImage(image.Rect(1, 1, size.X, size.Y)).(*ebiten.Image)
 
 		sprites[file.Name()] = Sprite{
 			Image:         newImg,
+			RawImage:      img,
 			AnchorPointsX: anchorPointsX,
 			AnchorPointsY: anchorPointsY,
 			SplitPointsX:  splitPointsX,
@@ -106,34 +111,34 @@ func LoadSprites(modName string) Sprites {
 }
 
 func (s Sprite) GetSubSprite(row, col int) *ebiten.Image {
-	x2, isX2Ok := s.SplitPointsX[row]
-	y2, isY2Ok := s.SplitPointsY[col]
+	// if we want row 0, col 0 - (0, 0, splitx 0, splity 0)
+	// if we want row 1, col 0 - (splitx 0, 0, splitx 1, splity 1)
+	// if we want row 2, col 0 - (splitx 1, 0, splitx 2, splity 1)
+	// if we want row 0, col 1 - (0, splity 0, splitx 1, splity 1)
+	// if we want row 1, col 1 - (splitx 0, splity 0, splitx 1, splity 1)
+	// if we want row 2, col 2 - (splitx 1, splity 1, splitx 2, splity 2)
+	// if we want row 2, col 3 - (splitx 1, splity 2, splitx 2, splity 3)
 
-	var rowStart, colStart int
+	var x0, x1, y0, y1 int
 
-	if row-1 < 0 {
-		rowStart = 0
+	if row > 0 {
+		x0 = s.SplitPointsX[row-1]
+		x1 = s.SplitPointsX[row]
 	} else {
-		rowStart = row - 1
+		x0 = 0
+		x1 = s.SplitPointsX[row]
 	}
 
-	if col-1 < 0 {
-		colStart = 0
+	if col > 0 {
+		y0 = s.SplitPointsY[col-1] + 1
+		y1 = s.SplitPointsY[col] + 1
 	} else {
-		colStart = col - 1
+		y0 = 0
+		y1 = s.SplitPointsY[col] + 1
 	}
 
-	x1, isX1Ok := s.SplitPointsX[rowStart]
-	y1, isY1Ok := s.SplitPointsY[colStart]
+	paletted := image.NewPaletted(s.RawImage.Bounds(), palette.Plan9) // TODO, black rect instead
+	cut := paletted.SubImage(image.Rect(x0, y0, x1, y1))
 
-	if !isX2Ok || !isY2Ok {
-		return s.Image
-	}
-
-	if isX1Ok && isY1Ok {
-		fmt.Println(x1, y1, x2, y2)
-		return s.Image.SubImage(image.Rect(x1, y1, x2, y2)).(*ebiten.Image)
-	}
-
-	return s.Image.SubImage(image.Rect(0, 0, x2, y2)).(*ebiten.Image)
+	return ebiten.NewImageFromImage(cut)
 }

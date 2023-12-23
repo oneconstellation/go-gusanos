@@ -5,8 +5,6 @@ import (
 	"image"
 	_ "image/png"
 	"os"
-
-	"github.com/hajimehoshi/ebiten/v2"
 )
 
 func NewImageFromFile(path, fileName string) image.Image {
@@ -23,9 +21,4 @@ func NewImageFromFile(path, fileName string) image.Image {
 	}
 
 	return img
-}
-
-func CutOffset(img *ebiten.Image, x, y int) *ebiten.Image {
-	size := img.Bounds().Size()
-	return img.SubImage(image.Rect(x, y, size.X, size.Y)).(*ebiten.Image)
 }
