@@ -1,7 +1,6 @@
 package gameData
 
 import (
-	"fmt"
 	"go-gusanos/util"
 	"image"
 	"image/color"
@@ -9,14 +8,17 @@ import (
 	_ "image/png"
 	"log"
 	"os"
-	"strconv"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
+type SubImager interface {
+	SubImage(r image.Rectangle) image.Image
+}
+
 type Sprite struct {
 	Image         *ebiten.Image
-	RawImage      image.Image
+	RawImage      *image.Paletted
 	AnchorPointsX map[int]int
 	AnchorPointsY map[int]int
 	SplitPointsX  map[int]int
@@ -50,18 +52,13 @@ func LoadSprites(modName string) Sprites {
 
 		for i := 0; i < size.X; i++ {
 			pixel := img.At(i, 0)
-			r, g, b, _ := pixel.RGBA()
 
-			// red pixel for anchor point, black for split point
-			isAnchor := r == 65535 && g == 0 && b == 0
-			isSplit := r == 0 && g == 0 && b == 0
-
-			if isAnchor {
+			if isAnchorPoint(pixel) {
 				anchorPointsX[anchorCount] = i
 				anchorCount++
 			}
 
-			if isSplit {
+			if isSplitPoint(pixel) {
 				splitPointsX[splitCount] = i
 				splitCount++
 			}
@@ -72,34 +69,24 @@ func LoadSprites(modName string) Sprites {
 
 		for i := 0; i < size.Y; i++ {
 			pixel := img.At(0, i)
-			r, g, b, _ := pixel.RGBA()
 
-			// red pixel for anchor point, black for split point
-			isAnchor := r == 65535 && g == 0 && b == 0
-			isSplit := r == 0 && g == 0 && b == 0
-
-			if isAnchor {
+			if isAnchorPoint(pixel) {
 				anchorPointsY[anchorCount] = i
 				anchorCount++
 			}
 
-			if isSplit {
+			if isSplitPoint(pixel) {
 				splitPointsY[splitCount] = i
 				splitCount++
 			}
 		}
 
-		fmt.Println("[" + file.Name() + "] sprites count in map: " + strconv.Itoa(len(anchorPointsX)*len(anchorPointsY)))
-		fmt.Println(splitPointsX)
-		fmt.Println(splitPointsY)
-		fmt.Println(anchorPointsX)
-		fmt.Println(anchorPointsY)
-
 		newImg := img.(SubImager).SubImage(image.Rect(1, 1, size.X, size.Y))
+		paletted := toPaletted(newImg)
 
 		sprites[file.Name()] = Sprite{
-			Image:         ebiten.NewImageFromImage(newImg),
-			RawImage:      newImg,
+			Image:         ebiten.NewImageFromImage(paletted),
+			RawImage:      paletted,
 			AnchorPointsX: anchorPointsX,
 			AnchorPointsY: anchorPointsY,
 			SplitPointsX:  splitPointsX,
@@ -111,19 +98,7 @@ func LoadSprites(modName string) Sprites {
 	return sprites
 }
 
-type SubImager interface {
-	SubImage(r image.Rectangle) image.Image
-}
-
 func (s Sprite) GetSubSprite(row, col int) *ebiten.Image {
-	// if we want row 0, col 0 - (0, 0, splitx 0, splity 0)
-	// if we want row 1, col 0 - (splitx 0, 0, splitx 1, splity 1)
-	// if we want row 2, col 0 - (splitx 1, 0, splitx 2, splity 1)
-	// if we want row 0, col 1 - (0, splity 0, splitx 1, splity 1)
-	// if we want row 1, col 1 - (splitx 0, splity 0, splitx 1, splity 1)
-	// if we want row 2, col 2 - (splitx 1, splity 1, splitx 2, splity 2)
-	// if we want row 2, col 3 - (splitx 1, splity 2, splitx 2, splity 3)
-
 	var x0, x1, y0, y1 int
 
 	if row > 0 {
@@ -142,25 +117,46 @@ func (s Sprite) GetSubSprite(row, col int) *ebiten.Image {
 		y1 = s.SplitPointsY[col] + 1
 	}
 
-	bounds := s.RawImage.Bounds()
+	cut := s.RawImage.SubImage(image.Rect(x0, y0, x1, y1))
 
+	return ebiten.NewImageFromImage(cut)
+}
+
+func isAnchorPoint(pixel color.Color) bool {
+	r, g, b, _ := pixel.RGBA()
+	return r == 65535 && g == 0 && b == 0
+}
+
+func isSplitPoint(pixel color.Color) bool {
+	r, g, b, _ := pixel.RGBA()
+	return r == 0 && g == 0 && b == 0
+}
+
+func isTransparentPoint(pixel color.Color) bool {
+	r, g, b, _ := pixel.RGBA()
+	return r == 65535 && g == 0 && b == 65535
+}
+
+func toPaletted(img image.Image) *image.Paletted {
 	var palette color.Palette = palette.WebSafe
 	palette = append(palette, color.Transparent)
-	paletted := image.NewPaletted(bounds, palette)
+
+	bounds := img.Bounds()
+	newImg := image.NewPaletted(bounds, palette)
+
 	for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
 		for x := bounds.Min.X; x < bounds.Max.X; x++ {
-			pixel := s.RawImage.At(x, y)
-			r, g, b, _ := pixel.RGBA()
+			pixel := img.At(x, y)
 
-			if r == 65535 && g == 0 && b == 65535 {
-				paletted.Set(x, y, color.Transparent)
+			if isTransparentPoint(pixel) {
+				// swap magenta background for transparent
+				newImg.Set(x, y, color.Transparent)
 				continue
 			}
 
-			paletted.Set(x, y, paletted.Palette.Convert(s.RawImage.At(x, y)))
+			newImg.Set(x, y, newImg.Palette.Convert(pixel))
 		}
 	}
-	cut := paletted.SubImage(image.Rect(x0, y0, x1, y1))
 
-	return ebiten.NewImageFromImage(cut)
+	return newImg
 }

@@ -70,10 +70,12 @@ func (w Worm) CheckEvents() {
 }
 
 func (w Worm) Render(screen *ebiten.Image, frame int) {
-	// frame is the frame number of skin/mask sprite which should be rendered
-	ebitenutil.DebugPrintAt(screen, strconv.Itoa(frame), 10, 50)
+	sprite := w.Skin.GetSubSprite(frame, 4)
+	size := sprite.Bounds().Size()
 
-	screen.DrawImage(w.Skin.GetSubSprite(frame, 0), &ebiten.DrawImageOptions{})
+	screen.DrawImage(sprite, &ebiten.DrawImageOptions{})
+	ebitenutil.DebugPrintAt(screen, "sprite size:"+strconv.Itoa(size.X)+"x"+strconv.Itoa(size.Y), 10, 50)
+	ebitenutil.DebugPrintAt(screen, "frame:"+strconv.Itoa(frame), 10, 60)
 
 	crosshairBounds := w.Crosshair.Image.Bounds().Size()
 	op := &ebiten.DrawImageOptions{}
