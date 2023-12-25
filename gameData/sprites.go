@@ -95,11 +95,11 @@ func LoadSprites(modName string) Sprites {
 		fmt.Println(anchorPointsX)
 		fmt.Println(anchorPointsY)
 
-		newImg := ebiten.NewImageFromImage(img).SubImage(image.Rect(1, 1, size.X, size.Y)).(*ebiten.Image)
+		newImg := img.(SubImager).SubImage(image.Rect(1, 1, size.X, size.Y))
 
 		sprites[file.Name()] = Sprite{
-			Image:         newImg,
-			RawImage:      img,
+			Image:         ebiten.NewImageFromImage(newImg),
+			RawImage:      newImg,
 			AnchorPointsX: anchorPointsX,
 			AnchorPointsY: anchorPointsY,
 			SplitPointsX:  splitPointsX,
@@ -143,13 +143,12 @@ func (s Sprite) GetSubSprite(row, col int) *ebiten.Image {
 	}
 
 	bounds := s.RawImage.Bounds()
-	sub := s.RawImage.(SubImager).SubImage(image.Rect(1, 1, bounds.Size().X, bounds.Size().Y))
 
-	subBounds := sub.Bounds()
 	var palette color.Palette = palette.WebSafe
-	paletted := image.NewPaletted(subBounds, palette)
-	for y := subBounds.Min.Y; y < subBounds.Max.Y; y++ {
-		for x := subBounds.Min.X; x < subBounds.Max.X; x++ {
+	palette = append(palette, color.Transparent)
+	paletted := image.NewPaletted(bounds, palette)
+	for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
+		for x := bounds.Min.X; x < bounds.Max.X; x++ {
 			pixel := s.RawImage.At(x, y)
 			r, g, b, _ := pixel.RGBA()
 
