@@ -1,6 +1,7 @@
 package gameData
 
 import (
+	"fmt"
 	"go-gusanos/util"
 	"image"
 	"image/color"
@@ -18,11 +19,11 @@ type SubImager interface {
 
 type Sprite struct {
 	Image         *ebiten.Image
-	RawImage      *image.Paletted
-	AnchorPointsX map[int]int
-	AnchorPointsY map[int]int
-	SplitPointsX  map[int]int
-	SplitPointsY  map[int]int
+	rawImage      *image.Paletted
+	anchorPointsX map[int]int
+	anchorPointsY map[int]int
+	splitPointsX  map[int]int
+	splitPointsY  map[int]int
 }
 
 type Sprites map[string]Sprite
@@ -86,11 +87,11 @@ func LoadSprites(modName string) Sprites {
 
 		sprites[file.Name()] = Sprite{
 			Image:         ebiten.NewImageFromImage(paletted),
-			RawImage:      paletted,
-			AnchorPointsX: anchorPointsX,
-			AnchorPointsY: anchorPointsY,
-			SplitPointsX:  splitPointsX,
-			SplitPointsY:  splitPointsY,
+			rawImage:      paletted,
+			anchorPointsX: anchorPointsX,
+			anchorPointsY: anchorPointsY,
+			splitPointsX:  splitPointsX,
+			splitPointsY:  splitPointsY,
 		}
 	}
 
@@ -98,29 +99,39 @@ func LoadSprites(modName string) Sprites {
 	return sprites
 }
 
-func (s Sprite) GetSubSprite(row, col int) *ebiten.Image {
+func (s Sprite) GetSubSprite(row, col int) (*ebiten.Image, *ebiten.DrawImageOptions) {
 	var x0, x1, y0, y1 int
 
 	if row > 0 {
-		x0 = s.SplitPointsX[row-1] + 1
-		x1 = s.SplitPointsX[row]
+		x0 = s.splitPointsX[row-1] + 1
+		x1 = s.splitPointsX[row]
 	} else {
 		x0 = 0
-		x1 = s.SplitPointsX[row]
+		x1 = s.splitPointsX[row]
 	}
 
 	if col > 0 {
-		y0 = s.SplitPointsY[col-1] + 1
-		y1 = s.SplitPointsY[col] + 1
+		y0 = s.splitPointsY[col-1] + 1
+		y1 = s.splitPointsY[col] + 1
 	} else {
 		y0 = 0
-		y1 = s.SplitPointsY[col] + 1
+		y1 = s.splitPointsY[col] + 1
 	}
 
-	cut := s.RawImage.SubImage(image.Rect(x0, y0, x1, y1))
+	cut := s.rawImage.SubImage(image.Rect(x0, y0, x1, y1))
+	ax, ay := s.GetAnchorPoint(row, col)
+	axr := ax - x0 // relative anchor x
+	ayr := ay - y0 // relative anchor y
+
+	oax, oay := s.GetAnchorPoint(0, 0) // reference anchor
+
+	op := ebiten.DrawImageOptions{}
+	fmt.Println(axr-oax, ayr-oay, "frame: ", row)
+	op.GeoM.Translate(float64(oax-axr), float64(oay-ayr)) // adjust anchor to reference
+
 	s.markAnchorPoint(row, col)
 
-	return ebiten.NewImageFromImage(cut)
+	return ebiten.NewImageFromImage(cut), &op
 }
 
 func isAnchorPoint(pixel color.Color) bool {
@@ -163,14 +174,14 @@ func toPaletted(img image.Image) *image.Paletted {
 }
 
 func (s Sprite) markAnchorPoint(row, col int) {
-	x, y := s.getAnchorPoint(row, col)
+	x, y := s.GetAnchorPoint(row, col)
 
-	s.RawImage.Set(x, y, color.RGBA{R: 255, G: 0, B: 0, A: 255})
+	s.rawImage.Set(x, y, color.RGBA{R: 255, G: 0, B: 0, A: 255})
 }
 
-func (s Sprite) getAnchorPoint(row, col int) (int, int) {
-	x := s.AnchorPointsX[row]
-	y := s.AnchorPointsY[col]
+func (s Sprite) GetAnchorPoint(row, col int) (int, int) {
+	x := s.anchorPointsX[row]
+	y := s.anchorPointsY[col]
 
 	return x, y
 }

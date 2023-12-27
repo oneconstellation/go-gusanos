@@ -70,15 +70,15 @@ func (w Worm) CheckEvents() {
 }
 
 func (w Worm) Render(screen *ebiten.Image, frame int) {
-	sprite := w.Skin.GetSubSprite(frame, 4)
+	sprite, op := w.Skin.GetSubSprite(frame, 4)
 	size := sprite.Bounds().Size()
 
-	screen.DrawImage(sprite, &ebiten.DrawImageOptions{})
+	screen.DrawImage(sprite, op)
 	ebitenutil.DebugPrintAt(screen, "sprite size:"+strconv.Itoa(size.X)+"x"+strconv.Itoa(size.Y), 10, 50)
 	ebitenutil.DebugPrintAt(screen, "frame:"+strconv.Itoa(frame), 10, 60)
 
 	crosshairBounds := w.Crosshair.Image.Bounds().Size()
-	op := &ebiten.DrawImageOptions{}
+	op = &ebiten.DrawImageOptions{}
 	op.GeoM.Translate(float64(frameWidth)+10, float64(frameHeight/2-crosshairBounds.Y/2))
 
 	screen.DrawImage(w.Crosshair.Image, op)

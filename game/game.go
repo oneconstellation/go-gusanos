@@ -32,7 +32,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	op := &ebiten.DrawImageOptions{}
 	screen.DrawImage(g.Data.Maps["poo"].Level, op)
 
-	frame := (g.count / 10) % 4
+	frame := (g.count / 40) % 4
 
 	// render player
 	for _, player := range g.Players {
