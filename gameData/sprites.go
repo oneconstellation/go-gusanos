@@ -1,7 +1,6 @@
 package gameData
 
 import (
-	"fmt"
 	"go-gusanos/util"
 	"image"
 	"image/color"
@@ -119,8 +118,7 @@ func (s Sprite) GetSubSprite(row, col int) *ebiten.Image {
 	}
 
 	cut := s.RawImage.SubImage(image.Rect(x0, y0, x1, y1))
-	ax, ay := s.markAnchorPoint(row, col)
-	fmt.Println(ax, ay)
+	s.markAnchorPoint(row, col)
 
 	return ebiten.NewImageFromImage(cut)
 }
@@ -164,11 +162,15 @@ func toPaletted(img image.Image) *image.Paletted {
 	return newImg
 }
 
-func (s Sprite) markAnchorPoint(row, col int) (int, int) {
-	x := s.AnchorPointsX[row]
-	y := s.AnchorPointsY[col]
+func (s Sprite) markAnchorPoint(row, col int) {
+	x, y := s.getAnchorPoint(row, col)
 
 	s.RawImage.Set(x, y, color.RGBA{R: 255, G: 0, B: 0, A: 255})
+}
+
+func (s Sprite) getAnchorPoint(row, col int) (int, int) {
+	x := s.AnchorPointsX[row]
+	y := s.AnchorPointsY[col]
 
 	return x, y
 }
