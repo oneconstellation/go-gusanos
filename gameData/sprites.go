@@ -103,7 +103,7 @@ func (s Sprite) GetSubSprite(row, col int) *ebiten.Image {
 	var x0, x1, y0, y1 int
 
 	if row > 0 {
-		x0 = s.SplitPointsX[row-1]
+		x0 = s.SplitPointsX[row-1] + 1
 		x1 = s.SplitPointsX[row]
 	} else {
 		x0 = 0
