@@ -70,7 +70,7 @@ func (w Worm) CheckEvents() {
 }
 
 func (w Worm) Render(screen *ebiten.Image, frame int) {
-	sprite, op := w.Skin.GetSubSprite(frame, 4)
+	sprite, op := w.Skin.GetSubSprite(frame, 0)
 	size := sprite.Bounds().Size()
 
 	screen.DrawImage(sprite, op)

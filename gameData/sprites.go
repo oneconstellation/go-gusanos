@@ -119,19 +119,19 @@ func (s Sprite) GetSubSprite(row, col int) (*ebiten.Image, *ebiten.DrawImageOpti
 	}
 
 	cut := s.rawImage.SubImage(image.Rect(x0, y0, x1, y1))
-	ax, ay := s.GetAnchorPoint(row, col)
-	axr := ax - x0 // relative anchor x
-	ayr := ay - y0 // relative anchor y
+	anchorX, anchorY := s.GetAnchorPoint(row, col)
+	relativeAnchorX := anchorX - x0 // relative anchor x
+	relativeAnchorY := anchorY - y0 // relative anchor y
 
-	oax, oay := s.GetAnchorPoint(0, 0) // reference anchor
+	originAnchorX, originAnchorY := s.GetAnchorPoint(0, 0) // reference anchor
 
-	op := ebiten.DrawImageOptions{}
-	fmt.Println(axr-oax, ayr-oay, "frame: ", row)
-	op.GeoM.Translate(float64(oax-axr), float64(oay-ayr)) // adjust anchor to reference
+	op := &ebiten.DrawImageOptions{}
+	fmt.Println(relativeAnchorX-originAnchorX, relativeAnchorY-originAnchorY, "frame: ", row)
+	op.GeoM.Translate(float64(originAnchorX-relativeAnchorX), float64(originAnchorY-relativeAnchorY)) // adjust anchor to reference
 
 	s.markAnchorPoint(row, col)
 
-	return ebiten.NewImageFromImage(cut), &op
+	return ebiten.NewImageFromImage(cut), op
 }
 
 func isAnchorPoint(pixel color.Color) bool {
