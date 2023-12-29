@@ -3,8 +3,13 @@ package player
 import (
 	"go-gusanos/gameData"
 	"image/color"
+	"math"
 
 	"github.com/hajimehoshi/ebiten/v2"
+)
+
+const (
+	crosshairDistance = 20
 )
 
 type Worm struct {
@@ -21,9 +26,9 @@ type Worm struct {
 	Deaths                                  int64
 	Air                                     int64
 	CrossR                                  int64 // ???
-	Aim, AimSpeed, AimRecoilSpeed           int64
+	Aim, AimSpeed, AimRecoilSpeed           float64
 	CurrentFrame                            uint64
-	Direction                               int // enum or bool here?
+	Direction                               int // 0 - left, 1 - right
 	Skin, Mask                              gameData.Sprite
 	Crosshair                               gameData.Sprite
 	CurrentFirecone                         gameData.Sprite
@@ -76,11 +81,11 @@ func (w Worm) Render(screen *ebiten.Image, frame int) {
 	crosshairSize := w.Crosshair.Image.Bounds().Size()
 	op = &ebiten.DrawImageOptions{}
 	op.GeoM.Translate(-float64(crosshairSize.X/2), -float64(crosshairSize.Y/2))
-	if w.Direction == 0 {
-		op.GeoM.Translate(float64(w.X-20), float64(w.Y))
-	} else {
-		op.GeoM.Translate(float64(w.X+20), float64(w.Y))
-	}
+
+	op.GeoM.Translate(
+		float64(w.X)+crosshairDistance*math.Cos(float64(w.Aim)),
+		float64(w.Y)+crosshairDistance*math.Sin(float64(w.Aim)))
+
 	screen.DrawImage(w.Crosshair.Image, op)
 }
 
@@ -92,7 +97,7 @@ func New(assets gameData.Sprites) Worm {
 	worm.Y = 40
 	worm.XSpeed = 0
 	worm.YSpeed = 0
-	worm.Aim = 64000
+	worm.Aim = math.Pi
 	worm.Direction = 0
 	worm.CrossR = 20
 	worm.Health = 1000
