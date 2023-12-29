@@ -97,8 +97,8 @@ func New(assets gameData.Sprites) Worm {
 	worm.Y = 40
 	worm.XSpeed = 0
 	worm.YSpeed = 0
-	worm.Aim = math.Pi
-	worm.Direction = 0
+	worm.Aim = 0
+	worm.Direction = 1
 	worm.CrossR = 20
 	worm.Health = 1000
 	worm.Deaths = 0
