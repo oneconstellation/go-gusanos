@@ -3,16 +3,8 @@ package player
 import (
 	"go-gusanos/gameData"
 	"image/color"
-	"strconv"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
-)
-
-const (
-	frameWidth  int = 10
-	frameHeight int = 10
-	frameCount  int = 4
 )
 
 type Worm struct {
@@ -70,17 +62,25 @@ func (w Worm) CheckEvents() {
 }
 
 func (w Worm) Render(screen *ebiten.Image, frame int) {
-	sprite, op := w.Skin.GetSubSprite(frame, 0)
-	size := sprite.Bounds().Size()
+	// render player skin
+	skin, op := w.Skin.GetSubSprite(frame, 0, w.Direction == 0, false)
+	op.GeoM.Translate(float64(w.X), float64(w.Y))
+	screen.DrawImage(skin, op)
 
-	screen.DrawImage(sprite, op)
-	ebitenutil.DebugPrintAt(screen, "sprite size:"+strconv.Itoa(size.X)+"x"+strconv.Itoa(size.Y), 10, 50)
-	ebitenutil.DebugPrintAt(screen, "frame:"+strconv.Itoa(frame), 10, 60)
+	// render player mask - TODO change color and blend with skin sprite
+	mask, op := w.Mask.GetSubSprite(frame, 0, w.Direction == 0, false)
+	op.GeoM.Translate(float64(w.X), float64(w.Y))
+	screen.DrawImage(mask, op)
 
-	crosshairBounds := w.Crosshair.Image.Bounds().Size()
+	// render crosshair
+	crosshairSize := w.Crosshair.Image.Bounds().Size()
 	op = &ebiten.DrawImageOptions{}
-	op.GeoM.Translate(float64(frameWidth)+10, float64(frameHeight/2-crosshairBounds.Y/2))
-
+	op.GeoM.Translate(-float64(crosshairSize.X/2), -float64(crosshairSize.Y/2))
+	if w.Direction == 0 {
+		op.GeoM.Translate(float64(w.X-20), float64(w.Y))
+	} else {
+		op.GeoM.Translate(float64(w.X+20), float64(w.Y))
+	}
 	screen.DrawImage(w.Crosshair.Image, op)
 }
 
@@ -88,12 +88,12 @@ func New(assets gameData.Sprites) Worm {
 	worm := Worm{}
 
 	worm.Name = "Player"
-	worm.X = 80 * 1000
-	worm.Y = 40 * 1000
+	worm.X = 80
+	worm.Y = 40
 	worm.XSpeed = 0
 	worm.YSpeed = 0
 	worm.Aim = 64000
-	worm.Direction = 1
+	worm.Direction = 0
 	worm.CrossR = 20
 	worm.Health = 1000
 	worm.Deaths = 0

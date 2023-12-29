@@ -1,7 +1,6 @@
 package gameData
 
 import (
-	"fmt"
 	"go-gusanos/util"
 	"image"
 	"image/color"
@@ -99,7 +98,7 @@ func LoadSprites(modName string) Sprites {
 	return sprites
 }
 
-func (s Sprite) GetSubSprite(row, col int) (*ebiten.Image, *ebiten.DrawImageOptions) {
+func (s Sprite) GetSubSprite(row, col int, hFlip, vFlip bool) (*ebiten.Image, *ebiten.DrawImageOptions) {
 	var x0, x1, y0, y1 int
 
 	if row > 0 {
@@ -119,15 +118,16 @@ func (s Sprite) GetSubSprite(row, col int) (*ebiten.Image, *ebiten.DrawImageOpti
 	}
 
 	cut := s.rawImage.SubImage(image.Rect(x0, y0, x1, y1))
-	anchorX, anchorY := s.GetAnchorPoint(row, col)
-	relativeAnchorX := anchorX - x0 // relative anchor x
-	relativeAnchorY := anchorY - y0 // relative anchor y
 
-	originAnchorX, originAnchorY := s.GetAnchorPoint(0, 0) // reference anchor
-
+	size := cut.Bounds().Size()
 	op := &ebiten.DrawImageOptions{}
-	fmt.Println(relativeAnchorX-originAnchorX, relativeAnchorY-originAnchorY, "frame: ", row)
-	op.GeoM.Translate(float64(originAnchorX-relativeAnchorX), float64(originAnchorY-relativeAnchorY)) // adjust anchor to reference
+	op.GeoM.Translate(-float64(size.X/2), -float64(size.Y/2))
+	if hFlip {
+		op.GeoM.Scale(-1, 1)
+	}
+	if vFlip {
+		op.GeoM.Scale(1, -1)
+	}
 
 	s.markAnchorPoint(row, col)
 
