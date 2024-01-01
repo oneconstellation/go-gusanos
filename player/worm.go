@@ -2,11 +2,16 @@ package player
 
 import (
 	"go-gusanos/gameData"
-	"go-gusanos/util"
 	"image/color"
 	"math"
+	"slices"
 
 	"github.com/hajimehoshi/ebiten/v2"
+)
+
+const (
+	animationFrames int     = 4
+	animationSpeed  float64 = 0.1
 )
 
 type Worm struct {
@@ -24,7 +29,7 @@ type Worm struct {
 	Air                                     int64
 	CrossR                                  int64
 	Aim, AimSpeed, AimRecoilSpeed           float64
-	CurrentFrame                            uint64
+	CurrentFrame                            int
 	Direction                               int // 0 - left, 1 - right
 	Skin, Mask                              gameData.Sprite
 	Crosshair                               gameData.Sprite
@@ -45,25 +50,27 @@ type Worm struct {
 
 // temporary, hardcoded implementation
 func (w *Worm) Update(keys []ebiten.Key) {
-	w.Keys.Left = util.Contains(keys, ebiten.KeyA)
-	if util.Contains(keys, ebiten.KeyA) {
+	if w.CurrentFrame < animationFrames*10 {
+		w.CurrentFrame++
+	} else {
+		w.CurrentFrame = 0
+	}
+
+	if slices.Contains(keys, ebiten.KeyA) {
 		w.moveLeft()
 	}
-	w.Keys.Right = util.Contains(keys, ebiten.KeyD)
-	if util.Contains(keys, ebiten.KeyD) {
+	if slices.Contains(keys, ebiten.KeyD) {
 		w.moveRight()
 	}
-	w.Keys.Up = util.Contains(keys, ebiten.KeyW)
-	if util.Contains(keys, ebiten.KeyW) {
+	if slices.Contains(keys, ebiten.KeyW) {
 		w.aimUp()
 	}
-	w.Keys.Down = util.Contains(keys, ebiten.KeyS)
-	if util.Contains(keys, ebiten.KeyS) {
+	if slices.Contains(keys, ebiten.KeyS) {
 		w.aimDown()
 	}
-	w.Keys.Fire = util.Contains(keys, ebiten.KeyF)
-	w.Keys.Jump = util.Contains(keys, ebiten.KeyG)
-	w.Keys.Change = util.Contains(keys, ebiten.KeyH)
+	w.Keys.Fire = slices.Contains(keys, ebiten.KeyF)
+	w.Keys.Jump = slices.Contains(keys, ebiten.KeyG)
+	w.Keys.Change = slices.Contains(keys, ebiten.KeyH)
 }
 
 func (w *Worm) aimUp() {
@@ -90,7 +97,11 @@ func (w *Worm) moveRight() {
 	}
 }
 
-func (w *Worm) Render(screen *ebiten.Image, frame int) {
+func (w *Worm) Render(screen *ebiten.Image) {
+	// calculate animationFrame
+	var counter float64 = float64(w.CurrentFrame) * animationSpeed
+	animationFrame := int(counter) % animationFrames
+
 	// render crosshair
 	var angle float64
 	crosshairSize := w.Crosshair.Image.Bounds().Size()
@@ -114,15 +125,16 @@ func (w *Worm) Render(screen *ebiten.Image, frame int) {
 	// so add half of pi to aim angle
 	// multiply by 2.8... it stays in the 0-8 range
 	// without need for modulo
-	aimFrame := int(w.Aim + math.Pi/2*2.8)
+	aimPosRange := w.Aim + math.Pi/2
+	aimFrame := int(aimPosRange * 2.8)
 
 	// render player skin
-	skin, op := w.Skin.GetSubSprite(frame, aimFrame, w.Direction == 0, false)
+	skin, op := w.Skin.GetSubSprite(int(animationFrame), aimFrame, w.Direction == 0, false)
 	op.GeoM.Translate(float64(w.X), float64(w.Y))
 	screen.DrawImage(skin, op)
 
 	// render player mask - TODO change color and blend with skin sprite
-	mask, op := w.Mask.GetSubSprite(frame, aimFrame, w.Direction == 0, false)
+	mask, op := w.Mask.GetSubSprite(int(animationFrame), aimFrame, w.Direction == 0, false)
 	op.GeoM.Translate(float64(w.X), float64(w.Y))
 	screen.DrawImage(mask, op)
 }
@@ -144,8 +156,7 @@ func New(assets gameData.Sprites) *Worm {
 	worm.CurrentWeapon = 0
 	worm.AimRecoilSpeed = 0
 	worm.Color = color.RGBA{100, 100, 220, 1}
-
-	worm.CurrentFrame = 2700
+	worm.CurrentFrame = 0
 	worm.Crosshair = assets["crosshair.png"]
 	worm.Active = false
 	worm.Flag = false
@@ -158,16 +169,9 @@ func New(assets gameData.Sprites) *Worm {
 	worm.RopeYSpeed = 1
 	worm.CurrentFirecone = assets["firecone.png"]
 	worm.FireconeTime = 0
-	// worm.AimAcceleration = 100
-	// worm.AimFriction = 50
-	// worm.AimMaxSpeed = 1200
 	worm.Skin = assets["skin.png"]
 	worm.Mask = assets["skin-mask.png"]
 	worm.Keys = Keys{
-		Up:     false,
-		Down:   false,
-		Right:  false,
-		Left:   false,
 		Jump:   false,
 		Fire:   false,
 		Change: false,
