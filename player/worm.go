@@ -67,13 +67,13 @@ func (w *Worm) Update(keys []ebiten.Key) {
 }
 
 func (w *Worm) aimUp() {
-	if w.Aim > -math.Pi/2 {
+	if w.Aim >= -math.Pi/2 {
 		w.Aim -= w.AimSpeed
 	}
 }
 
 func (w *Worm) aimDown() {
-	if w.Aim < math.Pi/2 {
+	if w.Aim <= math.Pi/2 {
 		w.Aim += w.AimSpeed
 	}
 }
@@ -91,20 +91,10 @@ func (w *Worm) moveRight() {
 }
 
 func (w *Worm) Render(screen *ebiten.Image, frame int) {
-	// render player skin
-	skin, op := w.Skin.GetSubSprite(frame, 0, w.Direction == 0, false)
-	op.GeoM.Translate(float64(w.X), float64(w.Y))
-	screen.DrawImage(skin, op)
-
-	// render player mask - TODO change color and blend with skin sprite
-	mask, op := w.Mask.GetSubSprite(frame, 0, w.Direction == 0, false)
-	op.GeoM.Translate(float64(w.X), float64(w.Y))
-	screen.DrawImage(mask, op)
-
 	// render crosshair
 	var angle float64
 	crosshairSize := w.Crosshair.Image.Bounds().Size()
-	op = &ebiten.DrawImageOptions{}
+	op := &ebiten.DrawImageOptions{}
 	op.GeoM.Translate(-float64(crosshairSize.X/2), -float64(crosshairSize.Y/2))
 
 	if w.Direction == 0 {
@@ -118,6 +108,23 @@ func (w *Worm) Render(screen *ebiten.Image, frame int) {
 		float64(w.Y)+float64(w.CrossR)*math.Sin(float64(angle)))
 
 	screen.DrawImage(w.Crosshair.Image, op)
+
+	// get aim-dependent frame
+	// normalize to positive range from 0 to math.Pi,
+	// so add half of pi to aim angle
+	// multiply by 2.8... it stays in the 0-8 range
+	// without need for modulo
+	aimFrame := int(w.Aim + math.Pi/2*2.8)
+
+	// render player skin
+	skin, op := w.Skin.GetSubSprite(frame, aimFrame, w.Direction == 0, false)
+	op.GeoM.Translate(float64(w.X), float64(w.Y))
+	screen.DrawImage(skin, op)
+
+	// render player mask - TODO change color and blend with skin sprite
+	mask, op := w.Mask.GetSubSprite(frame, aimFrame, w.Direction == 0, false)
+	op.GeoM.Translate(float64(w.X), float64(w.Y))
+	screen.DrawImage(mask, op)
 }
 
 func New(assets gameData.Sprites) *Worm {
