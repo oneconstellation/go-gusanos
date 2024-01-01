@@ -67,11 +67,15 @@ func (w *Worm) Update(keys []ebiten.Key) {
 }
 
 func (w *Worm) aimUp() {
-	w.Aim -= w.AimSpeed
+	if w.Aim > -math.Pi/2 {
+		w.Aim -= w.AimSpeed
+	}
 }
 
 func (w *Worm) aimDown() {
-	w.Aim += w.AimSpeed
+	if w.Aim < math.Pi/2 {
+		w.Aim += w.AimSpeed
+	}
 }
 
 func (w *Worm) moveLeft() {
@@ -98,13 +102,20 @@ func (w *Worm) Render(screen *ebiten.Image, frame int) {
 	screen.DrawImage(mask, op)
 
 	// render crosshair
+	var angle float64
 	crosshairSize := w.Crosshair.Image.Bounds().Size()
 	op = &ebiten.DrawImageOptions{}
 	op.GeoM.Translate(-float64(crosshairSize.X/2), -float64(crosshairSize.Y/2))
 
+	if w.Direction == 0 {
+		angle = math.Pi - w.Aim
+	} else {
+		angle = w.Aim
+	}
+
 	op.GeoM.Translate(
-		float64(w.X)+float64(w.CrossR)*math.Cos(float64(w.Aim)),
-		float64(w.Y)+float64(w.CrossR)*math.Sin(float64(w.Aim)))
+		float64(w.X)+float64(w.CrossR)*math.Cos(float64(angle)),
+		float64(w.Y)+float64(w.CrossR)*math.Sin(float64(angle)))
 
 	screen.DrawImage(w.Crosshair.Image, op)
 }
