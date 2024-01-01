@@ -2,14 +2,11 @@ package player
 
 import (
 	"go-gusanos/gameData"
+	"go-gusanos/util"
 	"image/color"
 	"math"
 
 	"github.com/hajimehoshi/ebiten/v2"
-)
-
-const (
-	crosshairDistance = 20
 )
 
 type Worm struct {
@@ -25,7 +22,7 @@ type Worm struct {
 	Health                                  int64
 	Deaths                                  int64
 	Air                                     int64
-	CrossR                                  int64 // ???
+	CrossR                                  int64
 	Aim, AimSpeed, AimRecoilSpeed           float64
 	CurrentFrame                            uint64
 	Direction                               int // 0 - left, 1 - right
@@ -44,29 +41,52 @@ type Worm struct {
 	ApplyRopeForce                          func()
 	Keys                                    Keys
 	Color                                   color.Color
-	RenderFlip                              func(where *ebiten.Image, frame int64, x, y int64)
 }
 
-func (w Worm) SendMessage(message string) {
-	// implementation of sending message to chat
+// temporary, hardcoded implementation
+func (w *Worm) Update(keys []ebiten.Key) {
+	w.Keys.Left = util.Contains(keys, ebiten.KeyA)
+	if util.Contains(keys, ebiten.KeyA) {
+		w.moveLeft()
+	}
+	w.Keys.Right = util.Contains(keys, ebiten.KeyD)
+	if util.Contains(keys, ebiten.KeyD) {
+		w.moveRight()
+	}
+	w.Keys.Up = util.Contains(keys, ebiten.KeyW)
+	if util.Contains(keys, ebiten.KeyW) {
+		w.aimUp()
+	}
+	w.Keys.Down = util.Contains(keys, ebiten.KeyS)
+	if util.Contains(keys, ebiten.KeyS) {
+		w.aimDown()
+	}
+	w.Keys.Fire = util.Contains(keys, ebiten.KeyF)
+	w.Keys.Jump = util.Contains(keys, ebiten.KeyG)
+	w.Keys.Change = util.Contains(keys, ebiten.KeyH)
 }
 
-func (w Worm) SendShootEvents() {
-	// implementation of sending shoot event to network stream
-	// void worm::shooteventsend()
+func (w *Worm) aimUp() {
+	w.Aim -= w.AimSpeed
 }
 
-func (w Worm) SendDeathEvents() {
-	// implementation of sending death event to network stream
-	// void worm::deatheventsend()
+func (w *Worm) aimDown() {
+	w.Aim += w.AimSpeed
 }
 
-func (w Worm) CheckEvents() {
-	// implementation of updating events affecting player
-	// void worm::checkevents()
+func (w *Worm) moveLeft() {
+	if w.Direction != 0 {
+		w.Direction = 0
+	}
 }
 
-func (w Worm) Render(screen *ebiten.Image, frame int) {
+func (w *Worm) moveRight() {
+	if w.Direction != 1 {
+		w.Direction = 1
+	}
+}
+
+func (w *Worm) Render(screen *ebiten.Image, frame int) {
 	// render player skin
 	skin, op := w.Skin.GetSubSprite(frame, 0, w.Direction == 0, false)
 	op.GeoM.Translate(float64(w.X), float64(w.Y))
@@ -83,13 +103,13 @@ func (w Worm) Render(screen *ebiten.Image, frame int) {
 	op.GeoM.Translate(-float64(crosshairSize.X/2), -float64(crosshairSize.Y/2))
 
 	op.GeoM.Translate(
-		float64(w.X)+crosshairDistance*math.Cos(float64(w.Aim)),
-		float64(w.Y)+crosshairDistance*math.Sin(float64(w.Aim)))
+		float64(w.X)+float64(w.CrossR)*math.Cos(float64(w.Aim)),
+		float64(w.Y)+float64(w.CrossR)*math.Sin(float64(w.Aim)))
 
 	screen.DrawImage(w.Crosshair.Image, op)
 }
 
-func New(assets gameData.Sprites) Worm {
+func New(assets gameData.Sprites) *Worm {
 	worm := Worm{}
 
 	worm.Name = "Player"
@@ -98,21 +118,14 @@ func New(assets gameData.Sprites) Worm {
 	worm.XSpeed = 0
 	worm.YSpeed = 0
 	worm.Aim = 0
+	worm.AimSpeed = 0.02
 	worm.Direction = 1
 	worm.CrossR = 20
 	worm.Health = 1000
 	worm.Deaths = 0
 	worm.CurrentWeapon = 0
-	worm.AimSpeed = 0
 	worm.AimRecoilSpeed = 0
 	worm.Color = color.RGBA{100, 100, 220, 1}
-
-	// for _, weapon := range worm.Weapon {
-	// 	weapon.WeaponIndex = 0
-	// 	weapon.ShootTime = 0
-	// 	weapon.Ammo = weaponsList.Number[weapon.WeaponIndex].Ammo
-	// 	weapon.Reloading = false
-	// }
 
 	worm.CurrentFrame = 2700
 	worm.Crosshair = assets["crosshair.png"]
@@ -145,5 +158,5 @@ func New(assets gameData.Sprites) Worm {
 	// here should go the replication of values to network stream
 	// with safety checks
 
-	return worm
+	return &worm
 }

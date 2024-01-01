@@ -17,7 +17,7 @@ func main() {
 	ebiten.SetVsyncEnabled(true)
 
 	gameData := gameData.New("default")
-	players := []player.Worm{
+	players := []*player.Worm{
 		player.New(gameData.Sprites),
 	}
 
