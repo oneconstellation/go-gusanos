@@ -1,10 +1,12 @@
 package game
 
 import (
+	"fmt"
 	"go-gusanos/gameData"
 	"go-gusanos/player"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
@@ -33,6 +35,8 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	// render player
 	for _, player := range g.Players {
 		player.Render(screen)
+		ebitenutil.DebugPrintAt(screen, fmt.Sprintf("x speed: %f", player.XSpeed), 10, 10)
+		ebitenutil.DebugPrintAt(screen, fmt.Sprintf("y speed: %f", player.YSpeed), 10, 20)
 	}
 }
 

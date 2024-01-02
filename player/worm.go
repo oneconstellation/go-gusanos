@@ -12,12 +12,15 @@ import (
 const (
 	animationFrames int     = 4
 	animationSpeed  float64 = 0.1
+	wormSpeed       float64 = 1.0
+	wormJumpForce   float64 = 25.0
+	gravity         float64 = -10.0 // TODO move to game
 )
 
 type Worm struct {
 	Name                                    string
 	X, Y                                    int64
-	XSpeed, YSpeed                          int64
+	XSpeed, YSpeed                          float64
 	RopeX, RopeY                            int64
 	RopeXSpeed, RopeYSpeed                  int64
 	RopeLength                              int64
@@ -56,6 +59,12 @@ func (w *Worm) Update(keys []ebiten.Key) {
 		w.CurrentFrame = 0
 	}
 
+	w.XSpeed = 0
+
+	if w.YSpeed > gravity {
+		w.YSpeed = w.YSpeed - 4
+	}
+
 	if slices.Contains(keys, ebiten.KeyA) {
 		w.moveLeft()
 	}
@@ -70,6 +79,9 @@ func (w *Worm) Update(keys []ebiten.Key) {
 	}
 	w.Keys.Fire = slices.Contains(keys, ebiten.KeyF)
 	w.Keys.Jump = slices.Contains(keys, ebiten.KeyG)
+	if slices.Contains(keys, ebiten.KeyG) {
+		w.jump()
+	}
 	w.Keys.Change = slices.Contains(keys, ebiten.KeyH)
 }
 
@@ -89,11 +101,19 @@ func (w *Worm) moveLeft() {
 	if w.Direction != 0 {
 		w.Direction = 0
 	}
+	w.XSpeed = -wormSpeed
 }
 
 func (w *Worm) moveRight() {
 	if w.Direction != 1 {
 		w.Direction = 1
+	}
+	w.XSpeed = wormSpeed
+}
+
+func (w *Worm) jump() {
+	if w.YSpeed == gravity {
+		w.YSpeed = wormJumpForce
 	}
 }
 
