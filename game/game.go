@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"go-gusanos/gameData"
 	"go-gusanos/player"
+	"os"
+	"slices"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
@@ -21,6 +23,10 @@ func (g *Game) Update() error {
 	g.Keys = inpututil.AppendPressedKeys(g.Keys[:0])
 	for _, player := range g.Players {
 		player.Update(g.Keys)
+	}
+
+	if slices.Contains(g.Keys, ebiten.KeyEscape) {
+		os.Exit(0)
 	}
 
 	return nil

@@ -1,6 +1,7 @@
 package player
 
 import (
+	"fmt"
 	"go-gusanos/gameData"
 	"image/color"
 	"math"
@@ -51,14 +52,41 @@ type Worm struct {
 	Color                                   color.Color
 }
 
-// temporary, hardcoded implementation
+type Function func()
+
 func (w *Worm) Update(keys []ebiten.Key) {
+	w.updateAnimation()
+	w.listenForKeys(keys)
+	w.updateMovement()
+}
+
+func (w *Worm) listenForKeys(keys []ebiten.Key) {
+	keymap := map[ebiten.Key]Function{
+		ebiten.KeyA: w.moveLeft,
+		ebiten.KeyD: w.moveRight,
+		ebiten.KeyW: w.aimUp,
+		ebiten.KeyS: w.aimDown,
+		ebiten.KeyF: w.fire,
+		ebiten.KeyG: w.jump,
+		ebiten.KeyH: w.weaponChangeMode,
+	}
+
+	for key, action := range keymap {
+		if slices.Contains(keys, key) {
+			action()
+		}
+	}
+}
+
+func (w *Worm) updateAnimation() {
 	if w.CurrentFrame < animationFrames*10 {
 		w.CurrentFrame++
 	} else {
 		w.CurrentFrame = 0
 	}
+}
 
+func (w *Worm) updateMovement() {
 	w.X = w.X + w.XSpeed
 	w.Y = w.Y + w.YSpeed
 
@@ -67,25 +95,6 @@ func (w *Worm) Update(keys []ebiten.Key) {
 	if w.YSpeed > gravity {
 		w.YSpeed--
 	}
-
-	if slices.Contains(keys, ebiten.KeyA) {
-		w.moveLeft()
-	}
-	if slices.Contains(keys, ebiten.KeyD) {
-		w.moveRight()
-	}
-	if slices.Contains(keys, ebiten.KeyW) {
-		w.aimUp()
-	}
-	if slices.Contains(keys, ebiten.KeyS) {
-		w.aimDown()
-	}
-	w.Keys.Fire = slices.Contains(keys, ebiten.KeyF)
-	w.Keys.Jump = slices.Contains(keys, ebiten.KeyG)
-	if slices.Contains(keys, ebiten.KeyG) {
-		w.jump()
-	}
-	w.Keys.Change = slices.Contains(keys, ebiten.KeyH)
 }
 
 func (w *Worm) aimUp() {
@@ -98,6 +107,14 @@ func (w *Worm) aimDown() {
 	if w.Aim <= math.Pi/2 {
 		w.Aim += w.AimSpeed
 	}
+}
+
+func (w *Worm) fire() {
+	fmt.Println(w.Name + ": fire")
+}
+
+func (w *Worm) weaponChangeMode() {
+	fmt.Println(w.Name + ": weapon change mode")
 }
 
 func (w *Worm) moveLeft() {
