@@ -35,8 +35,8 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	// render player
 	for _, player := range g.Players {
 		player.Render(screen)
-		ebitenutil.DebugPrintAt(screen, fmt.Sprintf("x speed: %f", player.XSpeed), 10, 10)
-		ebitenutil.DebugPrintAt(screen, fmt.Sprintf("y speed: %f", player.YSpeed), 10, 20)
+		ebitenutil.DebugPrintAt(screen, fmt.Sprintf("speed: [%f,%f]", player.XSpeed, player.YSpeed), 10, 10)
+		ebitenutil.DebugPrintAt(screen, fmt.Sprintf("pos: [%f,%f]", player.X, player.Y), 10, 20)
 	}
 }
 

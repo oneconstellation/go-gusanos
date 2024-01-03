@@ -12,14 +12,14 @@ import (
 const (
 	animationFrames int     = 4
 	animationSpeed  float64 = 0.1
-	wormSpeed       float64 = 1.0
+	wormSpeed       float64 = 0.5
 	wormJumpForce   float64 = 25.0
-	gravity         float64 = -10.0 // TODO move to game
+	gravity         float64 = 1.0 // TODO move to game
 )
 
 type Worm struct {
 	Name                                    string
-	X, Y                                    int64
+	X, Y                                    float64
 	XSpeed, YSpeed                          float64
 	RopeX, RopeY                            int64
 	RopeXSpeed, RopeYSpeed                  int64
@@ -58,6 +58,9 @@ func (w *Worm) Update(keys []ebiten.Key) {
 	} else {
 		w.CurrentFrame = 0
 	}
+
+	w.X = w.X + w.XSpeed
+	w.Y = w.Y + w.YSpeed
 
 	w.XSpeed = 0
 
