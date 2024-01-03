@@ -15,11 +15,15 @@ func main() {
 	// ebiten.SetWindowSize(1280, 960)
 	ebiten.SetWindowTitle("go-gusanos")
 	ebiten.SetVsyncEnabled(true)
+	// ebiten.SetFullscreen(true)
 
 	gameData := gameData.New("default")
+	players := []*player.Worm{
+		player.New(gameData.Sprites),
+	}
 
 	game := &game.Game{
-		Players: []player.Worm{player.New()},
+		Players: players,
 		Data:    &gameData,
 	}
 

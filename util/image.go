@@ -5,11 +5,9 @@ import (
 	"image"
 	_ "image/png"
 	"os"
-
-	"github.com/hajimehoshi/ebiten/v2"
 )
 
-func NewImageFromFile(path, fileName string) *ebiten.Image {
+func NewImageFromFile(path, fileName string) image.Image {
 	filePath := path + fileName
 
 	data, err := os.ReadFile(filePath)
@@ -22,7 +20,5 @@ func NewImageFromFile(path, fileName string) *ebiten.Image {
 		panic("error: decoding image " + fileName + " failed: " + err.Error())
 	}
 
-	decodedImage := ebiten.NewImageFromImage(img)
-
-	return decodedImage
+	return img
 }

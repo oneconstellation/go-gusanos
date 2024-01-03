@@ -8,20 +8,24 @@
         "type": "tabs",
         "children": [
           {
-            "id": "b75857bbac8b5104",
-            "type": "leaf",
-            "state": {
-              "type": "empty",
-              "state": {}
-            }
-          },
-          {
             "id": "b01f320e48e6e3be",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Goal.md",
+                "file": "Sprites.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "67634d17b92d5a58",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Parsing sprite structure.md",
                 "mode": "source",
                 "source": false
               }
@@ -78,7 +82,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 300,
+    "collapsed": true
   },
   "right": {
     "id": "361ac5a120d7641e",
@@ -94,7 +99,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Goal.md",
+                "file": "Parsing sprite structure.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -111,7 +116,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Goal.md",
+                "file": "Parsing sprite structure.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -134,7 +139,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Goal.md"
+                "file": "Parsing sprite structure.md"
               }
             }
           }
@@ -142,7 +147,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 300,
+    "collapsed": true
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -154,12 +160,14 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "b01f320e48e6e3be",
+  "active": "67634d17b92d5a58",
   "lastOpenFiles": [
+    "Sprites.md",
+    "Parsing sprite structure.md",
+    "Backwards compatibility.md",
+    "Goal.md",
     "OMFGScript.md",
     "Maps.md",
-    "2023-12-18.md",
-    "Goal.md",
-    "Backwards compatibility.md"
+    "2023-12-18.md"
   ]
 }

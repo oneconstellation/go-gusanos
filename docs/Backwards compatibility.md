@@ -1,7 +1,7 @@
 ### Mods
 The subjects to preserve are mods - full sets of content for game, with original gusanos being the base of it. A single mod consists of:
 - [[Maps|maps]],
-- sprites,
+- [[Sprites|sprites]],
 - weapons,
 - sounds,
 - objects,

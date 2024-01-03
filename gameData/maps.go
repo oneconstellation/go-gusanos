@@ -46,9 +46,11 @@ func LoadMaps(modName string) Maps {
 			for _, file := range mapFiles {
 				switch file.Name() {
 				case "level.png":
-					level = util.NewImageFromFile(directory+mapDir.Name()+"/", file.Name())
+					img := util.NewImageFromFile(directory+mapDir.Name()+"/", file.Name())
+					level = ebiten.NewImageFromImage(img)
 				case "material.png":
-					material = util.NewImageFromFile(directory+mapDir.Name()+"/", file.Name())
+					img := util.NewImageFromFile(directory+mapDir.Name()+"/", file.Name())
+					material = ebiten.NewImageFromImage(img)
 				case "config.cfg":
 					config = ParseMapConfigFile(directory + mapDir.Name() + "/" + file.Name())
 				}
