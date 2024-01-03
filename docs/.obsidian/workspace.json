@@ -25,7 +25,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Parsing sprite structure.md",
+                "file": "Goal.md",
                 "mode": "source",
                 "source": false
               }
@@ -99,7 +99,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Parsing sprite structure.md",
+                "file": "Goal.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -116,7 +116,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Parsing sprite structure.md",
+                "file": "Goal.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -139,7 +139,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Parsing sprite structure.md"
+                "file": "Goal.md"
               }
             }
           }
@@ -162,8 +162,8 @@
   },
   "active": "67634d17b92d5a58",
   "lastOpenFiles": [
-    "Sprites.md",
     "Parsing sprite structure.md",
+    "Sprites.md",
     "Backwards compatibility.md",
     "Goal.md",
     "OMFGScript.md",

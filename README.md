@@ -3,16 +3,14 @@ Golang recreation of [gusanos](https://github.com/wesz/gusanos), the Liero clone
 
 ## Plan
 
-1. Roughly rewrite the original codebase, using 
-    - the [ebitengine](github.com/hajimehoshi/ebiten) instead of [Allegro](github.com/liballeg/allegro5),
-    - no sound engine (for now),
-    - [nano](github.com/lonng/nano) instead of zoidcom (the original webpage is available only through Wayback Machine)
-    - comment `CHECK` for any places in code, that I should go back to understand more or refactor.
+1. Recreate gusanos game with the modern toolset, and publish builds for at least Linux, Mac OS and Windows.
 
-2. Produce executable running without (many) errors, if it will be somehow playable at this stage, that will be a plus.
+2. Don't try to rewrite existing code, just go with the 'create new game' mindset, and reference original whenever it's needed.
 
-3. Continuous refactor, hopefully documentation.
+3. Maintain backwards compatibility with all the existing mods to gusanos, and, as the original, with legacy Liero maps.
 
-4. Take my time.
+4. Continuous refactor, hopefully documentation.
 
-5. Every legit pull request is more than welcome.
+5. Take my time.
+
+6. Every legit pull request is more than welcome.
