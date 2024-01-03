@@ -62,7 +62,7 @@ func (w *Worm) Update(keys []ebiten.Key) {
 	w.XSpeed = 0
 
 	if w.YSpeed > gravity {
-		w.YSpeed = w.YSpeed - 4
+		w.YSpeed--
 	}
 
 	if slices.Contains(keys, ebiten.KeyA) {
