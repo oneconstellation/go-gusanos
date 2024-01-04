@@ -37,6 +37,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	// render the selected (where?) map
 	op := &ebiten.DrawImageOptions{}
 	screen.DrawImage(g.Data.Maps["poo"].Level, op)
+	screen.DrawImage(g.Data.Maps["poo"].Material, op)
 
 	// render player
 	for _, player := range g.Players {

@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Sprites.md",
+                "file": "Maps.md",
                 "mode": "source",
                 "source": false
               }
@@ -31,8 +31,7 @@
               }
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "vertical"
@@ -99,7 +98,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Goal.md",
+                "file": "Maps.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -116,7 +115,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Goal.md",
+                "file": "Maps.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -139,7 +138,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Goal.md"
+                "file": "Maps.md"
               }
             }
           }
@@ -160,12 +159,12 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "67634d17b92d5a58",
+  "active": "b01f320e48e6e3be",
   "lastOpenFiles": [
-    "Parsing sprite structure.md",
     "Sprites.md",
-    "Backwards compatibility.md",
     "Goal.md",
+    "Parsing sprite structure.md",
+    "Backwards compatibility.md",
     "OMFGScript.md",
     "Maps.md",
     "2023-12-18.md"
